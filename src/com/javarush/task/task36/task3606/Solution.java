@@ -19,7 +19,8 @@ public class Solution {
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Solution solution = new Solution(Solution.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "com/javarush/task/task36/task3606/data/second");
+        Solution solution = new Solution(Solution.class.getProtectionDomain()
+                .getCodeSource().getLocation().getPath() + "com/javarush/task/task36/task3606/data/second");
         solution.scanFileSystem();
         System.out.println(solution.getHiddenClassObjectByKey("secondhiddenclassimpl"));
         System.out.println(solution.getHiddenClassObjectByKey("firsthiddenclassimpl"));
