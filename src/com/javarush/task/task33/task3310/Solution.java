@@ -20,6 +20,8 @@ public class Solution {
         testStrategy(new OurHashBiMapStorageStrategy(), elementsNumber);
 
         testStrategy(new HashBiMapStorageStrategy(), elementsNumber);
+
+        testStrategy(new DualHashBidiMapStorageStrategy(), elementsNumber);
     }
 
     public static Set<Long> getIds(Shortener shortener, Set<String> strings) {
