@@ -13,15 +13,15 @@ public class Solution {
 
         testStrategy(new FileStorageStrategy(), elementsNumber);
 
-//        testStrategy(new HashMapStorageStrategy(), elementsNumber);
-//
-//        testStrategy(new OurHashMapStorageStrategy(), elementsNumber);
-//
-//        testStrategy(new OurHashBiMapStorageStrategy(), elementsNumber);
-//
-//        testStrategy(new HashBiMapStorageStrategy(), elementsNumber);
-//
-//        testStrategy(new DualHashBidiMapStorageStrategy(), elementsNumber);
+        testStrategy(new HashMapStorageStrategy(), elementsNumber);
+
+        testStrategy(new OurHashMapStorageStrategy(), elementsNumber);
+
+        testStrategy(new OurHashBiMapStorageStrategy(), elementsNumber);
+
+        testStrategy(new HashBiMapStorageStrategy(), elementsNumber);
+
+        testStrategy(new DualHashBidiMapStorageStrategy(), elementsNumber);
     }
 
     public static Set<Long> getIds(Shortener shortener, Set<String> strings) {
