@@ -11,7 +11,7 @@ public class Solution {
     public static void main(String[] args) {
         long elementsNumber = 10000;
 
-        testStrategy(new FileStorageStrategy(), elementsNumber);
+//        testStrategy(new FileStorageStrategy(), elementsNumber);
 
         testStrategy(new HashMapStorageStrategy(), elementsNumber);
 
@@ -19,6 +19,7 @@ public class Solution {
 
         testStrategy(new OurHashBiMapStorageStrategy(), elementsNumber);
 
+        testStrategy(new HashBiMapStorageStrategy(), elementsNumber);
     }
 
     public static Set<Long> getIds(Shortener shortener, Set<String> strings) {
