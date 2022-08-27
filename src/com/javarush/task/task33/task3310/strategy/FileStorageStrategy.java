@@ -140,4 +140,3 @@ public class FileStorageStrategy implements StorageStrategy {
         this.bucketSizeLimit = bucketSizeLimit;
     }
 }
-

@@ -11,17 +11,17 @@ public class Solution {
     public static void main(String[] args) {
         long elementsNumber = 10000;
 
-//        testStrategy(new FileStorageStrategy(), elementsNumber);
+        testStrategy(new FileStorageStrategy(), elementsNumber);
 
-        testStrategy(new HashMapStorageStrategy(), elementsNumber);
-
-        testStrategy(new OurHashMapStorageStrategy(), elementsNumber);
-
-        testStrategy(new OurHashBiMapStorageStrategy(), elementsNumber);
-
-        testStrategy(new HashBiMapStorageStrategy(), elementsNumber);
-
-        testStrategy(new DualHashBidiMapStorageStrategy(), elementsNumber);
+//        testStrategy(new HashMapStorageStrategy(), elementsNumber);
+//
+//        testStrategy(new OurHashMapStorageStrategy(), elementsNumber);
+//
+//        testStrategy(new OurHashBiMapStorageStrategy(), elementsNumber);
+//
+//        testStrategy(new HashBiMapStorageStrategy(), elementsNumber);
+//
+//        testStrategy(new DualHashBidiMapStorageStrategy(), elementsNumber);
     }
 
     public static Set<Long> getIds(Shortener shortener, Set<String> strings) {
