@@ -1,6 +1,7 @@
 package com.javarush.task.task39.task3913;
 
 import com.javarush.task.task39.task3913.query.IPQuery;
+import com.javarush.task.task39.task3913.query.UserQuery;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,7 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class LogParser implements IPQuery {
+public class LogParser implements IPQuery, UserQuery {
     private Path logDir;
     private List<LogEntity> logEntities = new ArrayList<>();
     private DateFormat simpleDateFormat = new SimpleDateFormat("d.M.yyyy H:m:s");
@@ -184,125 +185,180 @@ public class LogParser implements IPQuery {
         return current.after(after) && current.before(before);
     }
 
-
-/*
     @Override
-    public int getNumberOfUniqueIPs(Date after, Date before) {
-        return getUniqueIPs(after, before).size();
+    public Set<String> getAllUsers() {
+        return null;
     }
 
     @Override
-    public Set<String> getUniqueIPs(Date after, Date before) {
-        return logEntities.stream()
-                .filter(getLogEntityByPeriodOfTimePredicate(after, before))
-                .map(LogEntity::getIp)
-                .collect(Collectors.toSet());
+    public int getNumberOfUsers(Date after, Date before) {
+        return 0;
     }
 
-    private Predicate<LogEntity> getLogEntityByPeriodOfTimePredicate(Date after, Date before) {
-        return logEntity -> isPeriodOfTime(after, before, logEntity);
+    @Override
+    public int getNumberOfUserEvents(String user, Date after, Date before) {
+        return 0;
     }
 
-    private boolean isPeriodOfTime(Date after, Date before, LogEntity logEntity) {
-        Date current = logEntity.getDate();
-        if (after == null) {
-            after = new Date(0);
+    @Override
+    public Set<String> getUsersForIP(String ip, Date after, Date before) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getLoggedUsers(Date after, Date before) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getDownloadedPluginUsers(Date after, Date before) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getWroteMessageUsers(Date after, Date before) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getSolvedTaskUsers(Date after, Date before) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getSolvedTaskUsers(Date after, Date before, int task) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getDoneTaskUsers(Date after, Date before) {
+        return null;
+    }
+
+    @Override
+    public Set<String> getDoneTaskUsers(Date after, Date before, int task) {
+        return null;
+    }
+
+
+    /*
+        @Override
+        public int getNumberOfUniqueIPs(Date after, Date before) {
+            return getUniqueIPs(after, before).size();
         }
-        if (before == null) {
-            before = new Date(Long.MAX_VALUE);
+
+        @Override
+        public Set<String> getUniqueIPs(Date after, Date before) {
+            return logEntities.stream()
+                    .filter(getLogEntityByPeriodOfTimePredicate(after, before))
+                    .map(LogEntity::getIp)
+                    .collect(Collectors.toSet());
         }
-        return current.after(after) && current.before(before);
-    }
 
-    @Override
-    public Set<String> getIPsForUser(String user, Date after, Date before) {
-        return logEntities.stream()
-                .filter(getLogEntityByPeriodOfTimePredicate(after, before))
-                .filter(logEntity -> logEntity.getUser().equals(user))
-                .map(LogEntity::getIp)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<String> getIPsForEvent(Event event, Date after, Date before) {
-        return logEntities.stream()
-                .filter(getLogEntityByPeriodOfTimePredicate(after, before))
-                .filter(logEntity -> logEntity.getEvent().equals(event))
-                .map(LogEntity::getIp)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<String> getIPsForStatus(Status status, Date after, Date before) {
-        return logEntities.stream()
-                .filter(getLogEntityByPeriodOfTimePredicate(after, before))
-                .filter(logEntity -> logEntity.getStatus().equals(status))
-                .map(LogEntity::getIp)
-                .collect(Collectors.toSet());
-    }
-
-    private void readLogs() {
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(logDir)) {
-            Stream.of(directoryStream)
-                    .filter(file -> file.toString().endsWith(".log"))
-                    .map(file -> (Path) file)
-                    .forEach(this::parsingFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        private Predicate<LogEntity> getLogEntityByPeriodOfTimePredicate(Date after, Date before) {
+            return logEntity -> isPeriodOfTime(after, before, logEntity);
         }
-    }
 
-    private void parsingFile(Path file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file.toFile()))) {
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                String[] params = line.split("\t");
-
-                if (params.length != 5) {
-                    continue;
-                }
-
-                String ip = params[0];
-                String user = params[1];
-                Date date = readDate(params[2]);
-                Event event = readEvent(params[3]);
-                int eventAdditionalParameter = -1;
-                if (event.equals(Event.SOLVE_TASK) || event.equals(Event.DONE_TASK)) {
-                    eventAdditionalParameter = readAdditionalParameter(params[3]);
-                }
-                Status status = readStatus(params[4]);
-
-                LogEntity logEntity = new LogEntity(ip, user, date, event, eventAdditionalParameter, status);
-                logEntities.add(logEntity);
+        private boolean isPeriodOfTime(Date after, Date before, LogEntity logEntity) {
+            Date current = logEntity.getDate();
+            if (after == null) {
+                after = new Date(0);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            if (before == null) {
+                before = new Date(Long.MAX_VALUE);
+            }
+            return current.after(after) && current.before(before);
         }
-    }
 
-    private Date readDate(String source) {
-        try {
-            return simpleDateFormat.parse(source);
-        } catch (ParseException e) {
-            throw new RuntimeException("ParseException in readDate");
+        @Override
+        public Set<String> getIPsForUser(String user, Date after, Date before) {
+            return logEntities.stream()
+                    .filter(getLogEntityByPeriodOfTimePredicate(after, before))
+                    .filter(logEntity -> logEntity.getUser().equals(user))
+                    .map(LogEntity::getIp)
+                    .collect(Collectors.toSet());
         }
-    }
 
-    private Event readEvent(String source) {
-        return Arrays.stream(Event.values())
-                .filter(event -> event.name().equals(source))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("ParseException - unknown event"));
-    }
+        @Override
+        public Set<String> getIPsForEvent(Event event, Date after, Date before) {
+            return logEntities.stream()
+                    .filter(getLogEntityByPeriodOfTimePredicate(after, before))
+                    .filter(logEntity -> logEntity.getEvent().equals(event))
+                    .map(LogEntity::getIp)
+                    .collect(Collectors.toSet());
+        }
 
-    private int readAdditionalParameter(String source) {
-        return Integer.parseInt(source.split(" ")[1]);
-    }
+        @Override
+        public Set<String> getIPsForStatus(Status status, Date after, Date before) {
+            return logEntities.stream()
+                    .filter(getLogEntityByPeriodOfTimePredicate(after, before))
+                    .filter(logEntity -> logEntity.getStatus().equals(status))
+                    .map(LogEntity::getIp)
+                    .collect(Collectors.toSet());
+        }
 
-    private Status readStatus(String source) {
-        return Status.valueOf(source);
-    }
-*/
+        private void readLogs() {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(logDir)) {
+                Stream.of(directoryStream)
+                        .filter(file -> file.toString().endsWith(".log"))
+                        .map(file -> (Path) file)
+                        .forEach(this::parsingFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void parsingFile(Path file) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file.toFile()))) {
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    String[] params = line.split("\t");
+
+                    if (params.length != 5) {
+                        continue;
+                    }
+
+                    String ip = params[0];
+                    String user = params[1];
+                    Date date = readDate(params[2]);
+                    Event event = readEvent(params[3]);
+                    int eventAdditionalParameter = -1;
+                    if (event.equals(Event.SOLVE_TASK) || event.equals(Event.DONE_TASK)) {
+                        eventAdditionalParameter = readAdditionalParameter(params[3]);
+                    }
+                    Status status = readStatus(params[4]);
+
+                    LogEntity logEntity = new LogEntity(ip, user, date, event, eventAdditionalParameter, status);
+                    logEntities.add(logEntity);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private Date readDate(String source) {
+            try {
+                return simpleDateFormat.parse(source);
+            } catch (ParseException e) {
+                throw new RuntimeException("ParseException in readDate");
+            }
+        }
+
+        private Event readEvent(String source) {
+            return Arrays.stream(Event.values())
+                    .filter(event -> event.name().equals(source))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("ParseException - unknown event"));
+        }
+
+        private int readAdditionalParameter(String source) {
+            return Integer.parseInt(source.split(" ")[1]);
+        }
+
+        private Status readStatus(String source) {
+            return Status.valueOf(source);
+        }
+    */
     private class LogEntity {
         private String ip;
         private String user;
