@@ -224,7 +224,8 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
     public Set<Date> getDatesForUserAndEvent(String user, Event event, Date after, Date before) {
         return logEntities.stream()
                 .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
-                        log.getUser().equals(user) && log.getEvent().equals(event))
+                        log.getUser().equals(user) &&
+                        log.getEvent().equals(event))
                 .map(LogEntity::getDate)
                 .collect(Collectors.toSet());
     }
@@ -260,8 +261,7 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
     @Override
     public Date getDateWhenUserSolvedTask(String user, int task, Date after, Date before) {
         return logEntities.stream()
-                .filter(log -> dateBetweenDates(
-                        log.getDate(), after, before) &&
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
                         log.getUser().equals(user) &&
                         log.getEvent().equals(Event.SOLVE_TASK) &&
                         log.getEventAdditionalParameter() == task)
@@ -272,17 +272,34 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
 
     @Override
     public Date getDateWhenUserDoneTask(String user, int task, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getUser().equals(user) &&
+                        log.getEvent().equals(Event.DONE_TASK) &&
+                        log.getEventAdditionalParameter() == task)
+                .map(LogEntity::getDate)
+                .min(Comparator.comparing(Date::getTime))
+                .orElse(null);
     }
 
     @Override
     public Set<Date> getDatesWhenUserWroteMessage(String user, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getUser().equals(user) &&
+                        log.getEvent().equals(Event.WRITE_MESSAGE))
+                .map(LogEntity::getDate)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Date> getDatesWhenUserDownloadedPlugin(String user, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getUser().equals(user) &&
+                        log.getEvent().equals(Event.DOWNLOAD_PLUGIN))
+                .map(LogEntity::getDate)
+                .collect(Collectors.toSet());
     }
 
     private void readLogs() {
