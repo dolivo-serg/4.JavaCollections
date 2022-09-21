@@ -223,15 +223,19 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
     @Override
     public Set<Date> getDatesForUserAndEvent(String user, Event event, Date after, Date before) {
         return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after, before))
-                .filter(log -> log.getUser().equals(user) && log.getEvent().equals(event))
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getUser().equals(user) && log.getEvent().equals(event))
                 .map(LogEntity::getDate)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Date> getDatesWhenSomethingFailed(Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getStatus().equals(Status.FAILED))
+                .map(LogEntity::getDate)
+                .collect(Collectors.toSet());
     }
 
     @Override
