@@ -240,12 +240,21 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
 
     @Override
     public Set<Date> getDatesWhenErrorHappened(Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getStatus().equals(Status.ERROR))
+                .map(LogEntity::getDate)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Date getDateWhenUserLoggedFirstTime(String user, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getUser().equals(user) && log.getEvent().equals(Event.LOGIN))
+                .min(Comparator.comparing(LogEntity::getDate))
+                .map(LogEntity::getDate)
+                .orElse(null);
     }
 
     @Override
