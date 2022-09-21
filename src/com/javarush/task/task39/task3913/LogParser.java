@@ -252,14 +252,22 @@ public class LogParser implements IPQuery, UserQuery, DateQuery {
         return logEntities.stream()
                 .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
                         log.getUser().equals(user) && log.getEvent().equals(Event.LOGIN))
-                .min(Comparator.comparing(LogEntity::getDate))
                 .map(LogEntity::getDate)
+                .min(Comparator.comparing(Date::getTime))
                 .orElse(null);
     }
 
     @Override
     public Date getDateWhenUserSolvedTask(String user, int task, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(
+                        log.getDate(), after, before) &&
+                        log.getUser().equals(user) &&
+                        log.getEvent().equals(Event.SOLVE_TASK) &&
+                        log.getEventAdditionalParameter() == task)
+                .map(LogEntity::getDate)
+                .min(Comparator.comparing(Date::getTime))
+                .orElse(null);
     }
 
     @Override
