@@ -412,12 +412,15 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
 
     @Override
     public int getNumberOfAllEvents(Date after, Date before) {
-        return 0;
+        return getAllEvents(after, before).size();
     }
 
     @Override
     public Set<Event> getAllEvents(Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
     }
 
     @Override
