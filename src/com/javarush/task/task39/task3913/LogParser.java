@@ -302,6 +302,88 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
                 .map(LogEntity::getDate)
                 .collect(Collectors.toSet());
     }
+    
+    @Override
+    public int getNumberOfAllEvents(Date after, Date before) {
+        return getAllEvents(after, before).size();
+    }
+
+    @Override
+    public Set<Event> getAllEvents(Date after, Date before) {
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getEventsForIP(String ip, Date after, Date before) {
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getIp().equals(ip))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getEventsForUser(String user, Date after, Date before) {
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getUser().equals(user))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getFailedEvents(Date after, Date before) {
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getStatus().equals(Status.FAILED))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Event> getErrorEvents(Date after, Date before) {
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getStatus().equals(Status.ERROR))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public int getNumberOfAttemptToSolveTask(int task, Date after, Date before) {
+        return (int) logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getEventAdditionalParameter() == task &&
+                        log.getEvent().equals(Event.SOLVE_TASK))
+                .count();
+    }
+
+    @Override
+    public int getNumberOfSuccessfulAttemptToSolveTask(int task, Date after, Date before) {
+        return (int) logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getEventAdditionalParameter() == task &&
+                        log.getEvent().equals(Event.DONE_TASK))
+                .count();
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllSolvedTasksAndTheirNumber(Date after, Date before) {
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
+                        log.getEvent().equals(Event.SOLVE_TASK))
+                .collect(Collectors.toMap(LogEntity::getEventAdditionalParameter, log ->
+                    this.getNumberOfAttemptToSolveTask(log.getEventAdditionalParameter(), after, before)
+                    ));
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllDoneTasksAndTheirNumber(Date after, Date before) {
+        return null;
+    }
 
     private void readLogs() {
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(logDir)) {
@@ -408,75 +490,6 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
             before = new Date(Long.MAX_VALUE);
         }
         return current.after(after) && current.before(before);
-    }
-
-    @Override
-    public int getNumberOfAllEvents(Date after, Date before) {
-        return getAllEvents(after, before).size();
-    }
-
-    @Override
-    public Set<Event> getAllEvents(Date after, Date before) {
-        return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after, before))
-                .map(LogEntity::getEvent)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Event> getEventsForIP(String ip, Date after, Date before) {
-        return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
-                        log.getIp().equals(ip))
-                .map(LogEntity::getEvent)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Event> getEventsForUser(String user, Date after, Date before) {
-        return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
-                        log.getUser().equals(user))
-                .map(LogEntity::getEvent)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Event> getFailedEvents(Date after, Date before) {
-        return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
-                        log.getStatus().equals(Status.FAILED))
-                .map(LogEntity::getEvent)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Event> getErrorEvents(Date after, Date before) {
-        return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
-                        log.getStatus().equals(Status.ERROR))
-                .map(LogEntity::getEvent)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public int getNumberOfAttemptToSolveTask(int task, Date after, Date before) {
-        return 0;
-    }
-
-    @Override
-    public int getNumberOfSuccessfulAttemptToSolveTask(int task, Date after, Date before) {
-        return 0;
-    }
-
-    @Override
-    public Map<Integer, Integer> getAllSolvedTasksAndTheirNumber(Date after, Date before) {
-        return null;
-    }
-
-    @Override
-    public Map<Integer, Integer> getAllDoneTasksAndTheirNumber(Date after, Date before) {
-        return null;
     }
 
     private class LogEntity {
