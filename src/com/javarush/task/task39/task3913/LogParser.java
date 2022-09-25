@@ -425,22 +425,38 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
 
     @Override
     public Set<Event> getEventsForIP(String ip, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getIp().equals(ip))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Event> getEventsForUser(String user, Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getUser().equals(user))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Event> getFailedEvents(Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getStatus().equals(Status.FAILED))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Event> getErrorEvents(Date after, Date before) {
-        return null;
+        return logEntities.stream()
+                .filter(log -> dateBetweenDates(log.getDate(), after ,before) &&
+                        log.getStatus().equals(Status.ERROR))
+                .map(LogEntity::getEvent)
+                .collect(Collectors.toSet());
     }
 
     @Override
