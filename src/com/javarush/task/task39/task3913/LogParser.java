@@ -372,17 +372,32 @@ public class LogParser implements IPQuery, UserQuery, DateQuery, EventQuery {
 
     @Override
     public Map<Integer, Integer> getAllSolvedTasksAndTheirNumber(Date after, Date before) {
-        return logEntities.stream()
-                .filter(log -> dateBetweenDates(log.getDate(), after, before) &&
-                        log.getEvent().equals(Event.SOLVE_TASK))
-                .collect(Collectors.toMap(LogEntity::getEventAdditionalParameter, log ->
-                    this.getNumberOfAttemptToSolveTask(log.getEventAdditionalParameter(), after, before)
-                    ));
+        Map<Integer, Integer> result = new HashMap<>();
+        for (LogEntity logEntity : logEntities) {
+            if (dateBetweenDates(logEntity.getDate(), after, before)) {
+                if (logEntity.getEvent().equals(Event.SOLVE_TASK)) {
+                    int task = logEntity.getEventAdditionalParameter();
+                    Integer count = result.getOrDefault(task, 0);
+                    result.put(task, count + 1);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
     public Map<Integer, Integer> getAllDoneTasksAndTheirNumber(Date after, Date before) {
-        return null;
+        Map<Integer, Integer> result = new HashMap<>();
+        for (LogEntity logEntity : logEntities) {
+            if (dateBetweenDates(logEntity.getDate(), after, before)) {
+                if (logEntity.getEvent().equals(Event.DONE_TASK)) {
+                    int task = logEntity.getEventAdditionalParameter();
+                    Integer count = result.getOrDefault(task, 0);
+                    result.put(task, count + 1);
+                }
+            }
+        }
+        return result;
     }
 
     private void readLogs() {
