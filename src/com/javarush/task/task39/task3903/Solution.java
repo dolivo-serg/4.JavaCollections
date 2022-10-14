@@ -23,7 +23,12 @@ public class Solution {
         System.out.println("The result of swapping bits is " + swapBits(number, i, j));
     }
 
+
     public static long swapBits(long number, int i, int j) {
+        if (((number >>> i) & 1) != ((number >>> j) & 1)) {
+            long bitMask = (1L << i) | (1L << j);
+            number ^= bitMask;
+        }
         return number;
     }
 }
