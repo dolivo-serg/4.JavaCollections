@@ -6,13 +6,4 @@ public class RobotWorker implements Worker {
         System.out.println("RobotWorker is working!");
     }
 
-    @Override
-    public void eat() {
-        // Do nothing
-    }
-
-    @Override
-    public void sleep() {
-        // Do nothing
-    }
 }
