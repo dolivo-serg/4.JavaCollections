@@ -1,18 +1,21 @@
 package com.javarush.task.task39.task3906;
 
-public class SecuritySystem {
+public class SecuritySystem implements Switchable {
     private boolean on = false;
 
+    @Override
     public boolean isOn() {
         return on;
     }
 
-    void turnOff() {
+    @Override
+    public void turnOff() {
         System.out.println("Turning off the SecuritySystem!");
         on = false;
     }
 
-    void turnOn() {
+    @Override
+    public void turnOn() {
         System.out.println("Turning on the SecuritySystem!");
         on = true;
     }
