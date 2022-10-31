@@ -50,5 +50,13 @@ public class ConsoleHelper {
             }
         }
     }
+    public static Operation askOperation() {
+        try {
+            int input = Integer.parseInt(bis.readLine());
+            return Operation.getAllowableOperationByOrdinal(input);
+        } catch (IllegalArgumentException | IOException e) {
+            return askOperation();
+        }
+    }
 
 }
