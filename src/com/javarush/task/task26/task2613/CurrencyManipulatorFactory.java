@@ -10,10 +10,11 @@ public class CurrencyManipulatorFactory {
     }
 
     public static CurrencyManipulator getManipulatorByCurrencyCode(String currencyCode) {
-        map.entrySet().stream()
-                .filter(entry -> !entry.getKey().equals(currencyCode.toUpperCase()))
-                .findFirst()
-                .ifPresent(entry -> map.put(currencyCode, new CurrencyManipulator(currencyCode)));
+        currencyCode = currencyCode.toUpperCase();
+        if (!map.containsKey(currencyCode)) {
+            CurrencyManipulator manipulator = new CurrencyManipulator(currencyCode);
+            map.put(manipulator.getCurrencyCode(), manipulator);
+        }
         return map.get(currencyCode);
     }
 }
