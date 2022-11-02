@@ -50,12 +50,20 @@ public class ConsoleHelper {
             }
         }
     }
+
     public static Operation askOperation() {
-        try {
-            int input = Integer.parseInt(bis.readLine());
-            return Operation.getAllowableOperationByOrdinal(input);
-        } catch (IllegalArgumentException | IOException e) {
-            return askOperation();
+        while (true) {
+            ConsoleHelper.writeMessage("Please choose an operation desired or type 'EXIT' for exiting");
+            ConsoleHelper.writeMessage("\t 1 - operation.INFO");
+            ConsoleHelper.writeMessage("\t 2 - operation.DEPOSIT");
+            ConsoleHelper.writeMessage("\t 3 - operation.WITHDRAW");
+            ConsoleHelper.writeMessage("\t 4 - operation.EXIT");
+            Integer i = Integer.parseInt(ConsoleHelper.readString().trim());
+            try {
+                return Operation.getAllowableOperationByOrdinal(i);
+            } catch (IllegalArgumentException e) {
+                ConsoleHelper.writeMessage("Please specify valid data.");
+            }
         }
     }
 
