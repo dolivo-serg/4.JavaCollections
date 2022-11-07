@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class CommandExecutor {
     private static final Map<Operation, Command> allKnownCommandsMap = new HashMap<Operation, Command>() {{
+        put(Operation.LOGIN, new LoginCommand());
         put(Operation.INFO, new InfoCommand());
         put(Operation.DEPOSIT, new DepositCommand());
         put(Operation.WITHDRAW, new WithdrawCommand());
