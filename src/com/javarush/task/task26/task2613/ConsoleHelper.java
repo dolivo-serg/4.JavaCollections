@@ -63,18 +63,22 @@ public class ConsoleHelper {
 
     public static Operation askOperation() throws InterruptOperationException {
         while (true) {
-            ConsoleHelper.writeMessage("Please choose an operation desired or type 'EXIT' for exiting");
-            ConsoleHelper.writeMessage("\t 1 - operation.INFO");
-            ConsoleHelper.writeMessage("\t 2 - operation.DEPOSIT");
-            ConsoleHelper.writeMessage("\t 3 - operation.WITHDRAW");
-            ConsoleHelper.writeMessage("\t 4 - operation.EXIT");
+            ConsoleHelper.writeMessage(res.getString("choose.operation"));
+            ConsoleHelper.writeMessage("\t 1 - " + res.getString("operation.INFO"));
+            ConsoleHelper.writeMessage("\t 2 - " + res.getString("operation.DEPOSIT"));
+            ConsoleHelper.writeMessage("\t 3 - " + res.getString("operation.WITHDRAW"));
+            ConsoleHelper.writeMessage("\t 4 - " + res.getString("operation.EXIT"));
             Integer i = Integer.parseInt(ConsoleHelper.readString().trim());
             try {
                 return Operation.getAllowableOperationByOrdinal(i);
             } catch (IllegalArgumentException e) {
-                ConsoleHelper.writeMessage("Please specify valid data.");
+                ConsoleHelper.writeMessage(res.getString("invalid.data"));
             }
         }
+    }
+
+    public static void printExitMessage() {
+        ConsoleHelper.writeMessage(res.getString("the.end"));
     }
 
 }
