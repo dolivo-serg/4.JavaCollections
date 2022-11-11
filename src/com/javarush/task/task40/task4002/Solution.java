@@ -1,12 +1,17 @@
 package com.javarush.task.task40.task4002;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /* 
 Опять POST, а не GET
@@ -23,6 +28,9 @@ public class Solution {
         HttpPost request = new HttpPost(url);
 
         request.addHeader("User-Agent", "Mozilla/5.0");
+
+        List<NameValuePair> listUrlParameters = URLEncodedUtils.parse(urlParameters, StandardCharsets.UTF_8);
+        request.setEntity(new UrlEncodedFormEntity(listUrlParameters));
 
         HttpResponse response = client.execute(request);
 
